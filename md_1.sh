@@ -21,7 +21,7 @@ echo -e "${BIYellow}Add ions to the system to neutralize the charge:${NC}"
 gmx grompp -f ions.mdp -c $pdb_in_solv.gro -p topol.top -o ions.tpr
 gmx genion -s ions.tpr -o $pdb_in_solv_ions.gro -p topol.top -pname NA -nname CL -neutral
 wget http://www.mdtutorials.com/gmx/lysozyme/Files/minim.mdp
-gmx grompp -f minim.mdp -c $pdb_in_solv_ions.gro -p topol.top -o em.tpr
+gmx grompp -f minim.mdp -c $pdb_in_solv_ions.gro -p topol.top -o em.tpr -maxwarn 3
 sleep 1
 gmx mdrun -v -deffnm em -ntmpi 1  -pin on -nb gpu # run energy minimize
 # gmx_mpi energy -f em.edr -o potential.xvg
@@ -34,6 +34,7 @@ wget http://www.mdtutorials.com/gmx/lysozyme/Files/npt.mdp
 gmx grompp -f npt.mdp -c nvt.gro -r nvt.gro -t nvt.cpt -p topol.top -o npt.tpr
 sleep 1
 gmx mdrun -deffnm npt -ntmpi 1 -pin on -nb gpu
+gmx grompp -f md.mdp -c npt.gro -t npt.cpt -p topol.top -o md_0_1.tpr
 # gmx_mpi energy -f npt.edr -o pressure.xvg
 # gmx_mpi energy -f npt.edr -o density.xvg
 wget http://www.mdtutorials.com/gmx/lysozyme/Files/md.mdp
